@@ -1,4 +1,4 @@
-#Predicting demand for traffic management
+# Predicting demand for traffic management
 
 https://www.aiforsea.com/traffic-management
 
@@ -29,6 +29,6 @@ python test.py
 ```
 > The output of the test is the image of the demand for the next timestep.
 
-##Model architecture
+## Model architecture
 
 (image)
