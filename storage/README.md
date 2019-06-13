@@ -14,13 +14,16 @@ python data.py
 
 Data is stored in 2 list.
 
-1. image with demand
+1. Demand matrix
 2. timing
 
-Both the indexes of list correspond with each other.
+Both the indexes of list correspond with each other. They are sequential.
 
 ## Reading data from pickle file
 ```python
 python readdata.py
 ```
 
+## Fake data
+
+Tried increasing the dataset by generating a new middle value between timestep using moving average. It did not turn out well as the loss is higher.
