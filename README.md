@@ -1,4 +1,4 @@
-#Predicting demand for traffic management
+# Predicting demand for traffic management
 
 ## Requirements
 1. python 2.7/3.5
@@ -9,7 +9,7 @@
 
 
 ## Equipment used
-1. google colab (GPU K80)
+1. Google colab (GPU K80)
 > To train in colab, run the script inside the colab files
 
 2. Ubuntu LTS 16.04
@@ -29,7 +29,7 @@ python test.py
 ```
 > The output of the test is the image of the demand for the next timestep.
 
-##Model architecture
+## Model architecture
 
 ![Preprocessing](./images/preprocessing.png)
 

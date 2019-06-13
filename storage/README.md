@@ -1,4 +1,4 @@
-#Data preprocessing for traffic management
+# Data preprocessing for traffic management
 
 ## Variable
 1. geohash6
@@ -15,7 +15,7 @@ python data.py
 Data is stored in 2 list.
 
 1. Demand matrix
-2. timing
+2. Timing
 
 Both the indexes of list correspond with each other. They are sequential.
 
