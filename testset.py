@@ -2,13 +2,15 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
-import nalu
-import conv_nalu
-import conv_gru
+import time
+import gc
+import numpy as np
+from layers import nalu
+from layers import conv_nalu
+from layers import conv_gru
 from torch.autograd import Variable
-import preprocessing_c
+import preprocessing_testset
 from torchvision import datasets, transforms
-
 
 class Net(nn.Module):
 	def __init__(self):
@@ -100,58 +102,57 @@ class Net(nn.Module):
 
 		x=self.conv4_bn(self.conv4(hn6))
 		x=self.conv1_simple(x)
-		x=x.view(-1,125)
+		x=F.relu(x.view(-1,125))
 		return x
 
-def train(model, device, train_loader,loss_fn, optimizer, epoch):
-	model.train()
-	for batch_idx, (data, target,timing) in enumerate(train_loader):
-		data, target,timing = data.to(device), target.to(device),timing.to(device)
-		optimizer.zero_grad()
-		output = model(data,timing,device)
-		target = target.view(-1, 125)
-		loss = loss_fn(output, target)
-		loss.backward()
-		clipping_value = 1	#arbitrary number of your choosing
-		torch.nn.utils.clip_grad_norm_(model.parameters(), clipping_value)
-		optimizer.step()
-		if batch_idx % 50 == 0:
-			print('Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}'.format(
-				epoch, batch_idx * len(data), len(train_loader.dataset),
-				100. * batch_idx / len(train_loader), loss.item()))
-epochs=1000
+
+epochs=4
 
 def main():
-	dataset=preprocessing_c.Traffic_Dataset()
+	dataset=preprocessing_testset.Traffic_Dataset()
 
 	device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 	if device =="cuda":
 		torch.backends.cudnn.deterministic = True
 		torch.backends.cudnn.benchmark = False
 
-	train_loader = torch.utils.data.DataLoader(dataset=dataset,batch_size=1, shuffle=True)
+	train_loader = torch.utils.data.DataLoader(dataset=dataset,batch_size=1,pin_memory=True, shuffle=True)
 
 
 	model = Net().double().to(device)
 	loss_fn = nn.MSELoss(reduction='mean')
-	optimizer = optim.SGD(model.parameters(), lr=0.001,momentum=0.9)
+	optimizer = optim.SGD(model.parameters(), lr=0.0001,momentum=0.00001)
 
-
-	model.load_state_dict(torch.load("drive/Colab/grab/Traffic_management/model/traffic_cnn.pt"))
+	model.load_state_dict(torch.load("model/traffic_cnn.pt", map_location=lambda storage, loc: storage))
 	model.to(device)
 
-	for epoch in range(1, epochs + 1):
-		#if epoch %20==0:
-		#	optimizer = optim.SGD(model.parameters(), lr=0.01,momentum=0)
-		#else:
-		#	optimizer = optim.SGD(model.parameters(), lr=0.01,momentum=0.9)
-		train( model, device, train_loader, loss_fn,optimizer, epoch)
-		torch.save(model.state_dict(),"drive/Colab/grab/Traffic_management/model/traffic_cnn.pt")
 
-	#torch.save(model.state_dict(),"traffic_cnn.pt")
+	for batch_idx, (data,timing) in enumerate(train_loader):
+		data,timing = data.to(device),timing.to(device)
+		output = model(data,timing,device)
+		next_data=(output.view(25,5)).unsqueeze(0)
+		print next_data
+		break
+
+	for epoch in range(1, epochs + 1):
+		gc.collect() #garbage collection pass
+
+		data=data.squeeze(0)[1:]
+		data=torch.cat((data,next_data),0)
+		data=data.unsqueeze(0)
+
+		timing=timing.squeeze(1)[1:]
+		timing_next=(((timing[16]*2*95)+1)%96)/95/2
+		timing_next=timing_next.unsqueeze(0)
+		timing=(torch.cat((timing,timing_next),0)).unsqueeze(0)
+		output = model(data,timing,device)
+		next_data=(output.view(25,5)).unsqueeze(0)
+		print next_data
 
 if __name__ == '__main__':
 	main()
+
+
 
 
 

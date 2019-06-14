@@ -29,18 +29,14 @@ class Traffic_Dataset():
 		num_images=[]
 		num_time=[]
 		num_target=[]
-		for i in range(self.time_sequence):
-			num_images.append(self.x_data[index+i])
-			num_time.append(self.timing[index+i])
-			if i>(self.time_sequence-2):
-				num_target.append(self.x_data[index+i+1])
-		num_time=((torch.from_numpy(np.asarray(num_time)).double())/95)/2
-		num_target=torch.from_numpy(np.asarray(num_target))
-		return torch.from_numpy(np.asarray(num_images)),num_target,num_time
+
+		num_time=((torch.from_numpy(np.asarray(self.timing[-self.time_sequence:])).double())/95)/2
+		num_images=torch.from_numpy(np.asarray(self.x_data[-self.time_sequence:]))
+		return torch.from_numpy(np.asarray(num_images)),num_time
 
 	def __len__(self):
 		#print("Size of data",self.len)
-		return (self.len-self.time_sequence)
+		return (1)
 
 	def read_data(self):
 
