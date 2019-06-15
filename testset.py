@@ -106,7 +106,7 @@ class Net(nn.Module):
 		return x
 
 
-epochs=4
+epochs=5
 
 def main():
 	dataset=preprocessing_testset.Traffic_Dataset()
@@ -134,7 +134,7 @@ def main():
 		print next_data
 		break
 
-	for epoch in range(1, epochs + 1):
+	for epoch in range(1, epochs):
 		gc.collect() #garbage collection pass
 
 		data=data.squeeze(0)[1:]
