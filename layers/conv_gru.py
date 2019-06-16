@@ -37,7 +37,7 @@ class ConvGRUCell(nn.Module):
 		# generate empty prev_state, if None is provided
 		if prev_state is None:
 			state_size = [batch_size, self.hidden_size] + list(spatial_size)
-			prev_state = (Variable(torch.zeros(state_size).double()).to(device))
+			prev_state = (Variable(torch.ones(state_size).double()).to(device))/2
 
 		# data size is [batch, channel, height, width]
 		stacked_inputs = torch.cat([input_.double(), prev_state], dim=1)

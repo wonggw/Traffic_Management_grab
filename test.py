@@ -152,7 +152,7 @@ def main():
 
 	model = Net().double().to(device)
 	loss_fn = nn.MSELoss(reduction='mean')
-	optimizer = optim.RMSprop(model.parameters(), lr=0.001,momentum=0.9)
+	optimizer = optim.SGD(model.parameters(), lr=0.0001,momentum=0.00001)
 
 	model.load_state_dict(torch.load("model/traffic_cnn.pt", map_location=lambda storage, loc: storage))
 	model.to(device)

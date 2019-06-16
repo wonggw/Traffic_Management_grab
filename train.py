@@ -131,12 +131,13 @@ def main():
 	device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 
-	train_loader = torch.utils.data.DataLoader(dataset=dataset,batch_size=5, shuffle=False)
+	train_loader = torch.utils.data.DataLoader(dataset=dataset,batch_size=10, shuffle=False)
 
 
 	model = Net().double().to(device)
 	loss_fn = nn.MSELoss(reduction='mean')
-	optimizer = optim.RMSprop(model.parameters(), lr=0.001,momentum=0.9)
+	optimizer = optim.Adam(model.parameters(), lr=0.0001)
+
 	#model.load_state_dict(torch.load("traffic_cnn.pt"))
 	#model.to(device)
 

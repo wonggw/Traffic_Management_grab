@@ -30,7 +30,7 @@ class Traffic_Dataset():
 		num_time=[]
 		num_target=[]
 
-		num_time=(((torch.from_numpy(np.asarray(self.timing[-self.time_sequence:])).double())/95))/4
+		num_time=((torch.from_numpy(np.asarray(self.timing[-self.time_sequence:])).double())/95)/2
 		num_images=torch.from_numpy(np.asarray(self.x_data[-self.time_sequence:]))
 		return torch.from_numpy(np.asarray(num_images)),num_time
 
