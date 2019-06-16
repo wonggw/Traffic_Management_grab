@@ -35,7 +35,7 @@ class Traffic_Dataset():
 			num_time.append(self.timing[index+i])
 			if i>(self.time_sequence-2):
 				num_target.append(self.x_data[index+i+1])
-		num_time=((torch.from_numpy(np.asarray(num_time)).double())/95)/2
+		num_time=(((torch.from_numpy(np.asarray(num_time)).double())/95))/4
 		num_target=torch.from_numpy(np.asarray(num_target))
 		return torch.from_numpy(np.asarray(num_images)),num_target,num_time
 

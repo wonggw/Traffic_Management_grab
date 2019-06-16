@@ -121,7 +121,7 @@ def main():
 
 	model = Net().double().to(device)
 	loss_fn = nn.MSELoss(reduction='mean')
-	optimizer = optim.SGD(model.parameters(), lr=0.0001,momentum=0.00001)
+	optimizer = optim.RMSprop(model.parameters(), lr=0.001,momentum=0.9)
 
 	model.load_state_dict(torch.load("model/traffic_cnn.pt", map_location=lambda storage, loc: storage))
 	model.to(device)
@@ -142,9 +142,10 @@ def main():
 		data=data.unsqueeze(0)
 
 		timing=timing.squeeze(1)[1:]
-		timing_next=(((timing[16]*2*95)+1)%96)/95/2
+		timing_next=(((timing[16]*95*4)+1)%96)/95/4
 		timing_next=timing_next.unsqueeze(0)
 		timing=(torch.cat((timing,timing_next),0)).unsqueeze(0)
+		#print timing
 		output = model(data,timing,device)
 		next_data=(output.view(25,5)).unsqueeze(0)
 		print next_data

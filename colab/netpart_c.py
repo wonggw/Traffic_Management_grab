@@ -134,17 +134,17 @@ def main():
 
 	model = Net().double().to(device)
 	loss_fn = nn.MSELoss(reduction='mean')
-	optimizer = optim.SGD(model.parameters(), lr=0.001,momentum=0.9)
+	optimizer = optim.RMSprop(model.parameters(), lr=0.002,momentum=0)
 
 
 	model.load_state_dict(torch.load("drive/Colab/grab/Traffic_management/model/traffic_cnn.pt"))
 	model.to(device)
 
 	for epoch in range(1, epochs + 1):
-		#if epoch %20==0:
-		#	optimizer = optim.SGD(model.parameters(), lr=0.01,momentum=0)
+		#if epoch %10==0:
+		#	optimizer = optim.SGD(model.parameters(), lr=0.0001,momentum=0)
 		#else:
-		#	optimizer = optim.SGD(model.parameters(), lr=0.01,momentum=0.9)
+		#	optimizer = optim.SGD(model.parameters(), lr=0.0001,momentum=0.8)
 		train( model, device, train_loader, loss_fn,optimizer, epoch)
 		torch.save(model.state_dict(),"drive/Colab/grab/Traffic_management/model/traffic_cnn.pt")
 
